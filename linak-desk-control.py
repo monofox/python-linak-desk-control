@@ -281,7 +281,7 @@ class LinakController(object):
 
 		self._setStatusReport()
 		time.sleep(1000/1000000.0)
-		if not _moveEnd():
+		if not self._moveEnd():
 			raise Exception('Device not ready - initialization failed on step 2 (moveEnd)')
 
 		time.sleep(100000/1000000.0)
