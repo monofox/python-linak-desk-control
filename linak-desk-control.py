@@ -174,10 +174,7 @@ class LinakController(object):
 
 		if self._handle.kernelDriverActive(0):
 			print("Detaching kernel driver")
-			try:
-				self._handle.detachKernelDriver(0)
-			except usb1.USBError as e:
-				print("Warning: Could not detach kernel driver: {:s}".format(str(e)))
+			self._handle.detachKernelDriver(0)
 
 		self._handle.claimInterface(0)
 		self._initDevice()
