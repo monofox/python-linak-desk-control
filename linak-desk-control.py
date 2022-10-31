@@ -172,6 +172,10 @@ class LinakController(object):
 		if not self._handle:
 			raise Exception('Could not connect to usb device')
 
+		if os.name == 'posix' and self._handle.kernelDriverActive(0):
+			print("Detaching kernel driver")
+			self._handle.detachKernelDriver(0)
+
 		self._handle.claimInterface(0)
 		self._initDevice()
 
