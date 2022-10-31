@@ -13,6 +13,7 @@
 # program. If not, see <https://www.gnu.org/licenses/>. 
 
 from ctypes import sizeof
+import os
 import sys
 import time
 import usb1

@@ -1,0 +1,54 @@
+From 99f26c1ee31fd63270b9f3f547e767d55fe574fe Mon Sep 17 00:00:00 2001
+From: Tom Homewood <tomhomewood@gmail.com>
+Date: Mon, 17 Oct 2022 00:44:08 +0100
+Subject: [PATCH 1/2] Detach kernel driver before claiming interface, if
+ necessary.
+
+---
+ linak-desk-control.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/linak-desk-control.py b/linak-desk-control.py
+index 1950903..bdacc40 100644
+--- a/linak-desk-control.py
++++ b/linak-desk-control.py
+@@ -172,6 +172,13 @@ def __init__(self, vendor_id=0x12d3, product_id=0x0002):
+ 		if not self._handle:
+ 			raise Exception('Could not connect to usb device')
+ 
++		if self._handle.kernelDriverActive(0):
++			print("Detaching kernel driver")
++			try:
++				self._handle.detachKernelDriver(0)
++			except usb1.USBError as e:
++				print("Warning: Could not detach kernel driver: {:s}".format(str(e)))
++
+ 		self._handle.claimInterface(0)
+ 		self._initDevice()
+ 
+
+From 52cfc2caf7512242f4c14a273774df8eb19a562f Mon Sep 17 00:00:00 2001
+From: TOm Homewood <tomhomewood@gmail.com>
+Date: Mon, 17 Oct 2022 16:05:07 +0100
+Subject: [PATCH 2/2] Removed exception handling, pass it up to client instead.
+
+---
+ linak-desk-control.py | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/linak-desk-control.py b/linak-desk-control.py
+index bdacc40..974ea04 100644
+--- a/linak-desk-control.py
++++ b/linak-desk-control.py
+@@ -174,10 +174,7 @@ def __init__(self, vendor_id=0x12d3, product_id=0x0002):
+ 
+ 		if self._handle.kernelDriverActive(0):
+ 			print("Detaching kernel driver")
+-			try:
+-				self._handle.detachKernelDriver(0)
+-			except usb1.USBError as e:
+-				print("Warning: Could not detach kernel driver: {:s}".format(str(e)))
++			self._handle.detachKernelDriver(0)
+ 
+ 		self._handle.claimInterface(0)
+ 		self._initDevice()
